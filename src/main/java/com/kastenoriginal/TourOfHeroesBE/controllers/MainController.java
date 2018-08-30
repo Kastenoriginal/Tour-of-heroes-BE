@@ -4,32 +4,33 @@ import com.kastenoriginal.TourOfHeroesBE.entities.Hero;
 import com.kastenoriginal.TourOfHeroesBE.repositories.HeroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.MissingResourceException;
 
 @Controller
-@RequestMapping(path = "/demo")
+@RequestMapping(path = "/tourofheroes")
 public class MainController {
 
     @Autowired
     private HeroRepository heroRepository;
 
-    @GetMapping(path = "/add")
+    @GetMapping(path = "/heroes")
     public @ResponseBody
-    String addHero(@RequestParam String name, @RequestParam String heroType, @RequestParam String imageName, @RequestParam String bio) {
-        Hero hero = new Hero();
-        hero.setName(name);
-        hero.setHeroType(heroType);
-        hero.setImageName(imageName);
-        hero.setBio(bio);
-        heroRepository.save(hero);
-        return "Saved";
+    Iterable<Hero> getAllHeroes() {
+        return heroRepository.findAll();
     }
 
-    @GetMapping(path = "/all")
-    public @ResponseBody Iterable<Hero> getAllHeroes() {
-        return heroRepository.findAll();
+    @GetMapping(path = "/heroes/{id}")
+    public @ResponseBody
+    Hero getHeroById(@PathVariable Integer id) {
+        return heroRepository.findById(id).orElseThrow(() -> new MissingResourceException("Hero with id: " + id + " not found.", "MainController", "Key"));
+    }
+
+    @PostMapping(path = "/add")
+    public @ResponseBody
+    Hero addHero(@Valid @RequestBody Hero hero) {
+        return heroRepository.save(hero);
     }
 }
