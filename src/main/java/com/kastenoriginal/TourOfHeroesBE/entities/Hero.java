@@ -1,9 +1,6 @@
 package com.kastenoriginal.TourOfHeroesBE.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Hero {
@@ -18,6 +15,7 @@ public class Hero {
 
     private String imageName;
 
+    @Column(length = Integer.MAX_VALUE)
     private String bio;
 
     public Integer getId() {
